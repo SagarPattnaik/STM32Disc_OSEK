@@ -1,6 +1,6 @@
 /*******************************************************************************
 	Module Name:		OsCfg.h
-	Generation Date:	2023-July-Thursday	12:28:27
+	Generation Date:	2023-July-Thursday	14:51:49
 	Tool Version: 		V.0
 	Description: 		Os configuration header file
 
@@ -93,12 +93,20 @@ extern uint32_t OsCfg_Stack[150+16/* 16 for Idle mechanism */];
 /*******************************************************************************
 	Rosource task authorization
 *******************************************************************************/
-extern const uint8_t OsCfg_ResourceTaskAuthorized[1][1]; /*Not used*/
+extern const uint8_t OsCfg_ResourceTaskAuthorized[1/*Resources*/][3/*Tasks*/];
+
+/*******************************************************************************
+	Symbolic names for resources
+*******************************************************************************/
+enum OsCfg_ResourceIDs{
+	SharedRes
+};
+
 
 /*******************************************************************************
 	Ceiling priority for sysytem resources
 *******************************************************************************/
-extern const uint8_t OsCfg_ResourceCeilPri[1];/*Not used.*/
+extern const uint8_t OsCfg_ResourceCeilPri[1];
 /*******************************************************************************
 	Error code task buffer
 *******************************************************************************/
@@ -106,9 +114,9 @@ extern StatusType SVCCnxt_ErrCodes[3/*OsCfg_MAX_NUM_OF_TASKS*/];
 /*******************************************************************************
 	SVC resource context
 *******************************************************************************/
-extern ResourceType SVCCnxt_ResMgrCnxt[1];/*Not used*/
+extern ResourceType SVCCnxt_ResMgrCnxt[3/*OsCfg_MAX_NUM_OF_TASKS*/];
 /*******************************************************************************
 	Resource control block table
 *******************************************************************************/
-extern RCB_t RCB[1];/*Not used*/
+extern RCB_t RCB[1];
 #endif

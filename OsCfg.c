@@ -1,6 +1,6 @@
 /*******************************************************************************
 	Module Name:		OsCfg.c
-	Generation Date:	2023-July-Thursday	12:28:27
+	Generation Date:	2023-July-Thursday	14:51:49
 	Tool Version: 		V.0
 	Description: 		Os configuration src file
 
@@ -29,7 +29,7 @@ const uint8_t OsCfg_MAX_NUM_OF_ALARMS = 0U;
 /*******************************************************************************
 	Num of system resources
 *******************************************************************************/
-const uint8_t OsCfg_MAX_NUM_OF_RESOURCES = 0U;
+const uint8_t OsCfg_MAX_NUM_OF_RESOURCES = 1U;
 /*******************************************************************************
 	App task externs
 *******************************************************************************/
@@ -64,7 +64,7 @@ tcb_t OsCfg_TCBs[3/*num of app tasks*/+1/*for Idle mechanism */] =
 	/*preemptability*/1u, /*schedule requested */0u},
 
 	{/*SP*/0u, /*basic SP*/0u , /*task pointer*/OsTask_TaskC, 
-	/*task state*/SUSPENDED, /*DeadBeefLoc*/NULL, /*priority*/12, /*task model*/BASIC,
+	/*task state*/SUSPENDED, /*DeadBeefLoc*/NULL, /*priority*/20, /*task model*/BASIC,
 	/*set events*/0u, /*wait events*/0u, /*res occupation*/0u, 
 	/*preemptability*/1u, /*schedule requested */0u},
 
@@ -91,11 +91,16 @@ acb_t OsCfg_Alarms[1];/*Not used*/
 /*******************************************************************************
 	Resource task authorization
 *******************************************************************************/
-const uint8_t OsCfg_ResourceTaskAuthorized[1][1]; /*Not used*/
+const uint8_t OsCfg_ResourceTaskAuthorized[1/*Resources*/][3/*Tasks*/] = 
+{ 
+	{/*TaskA*/ 1u, /*TaskB*/ 1u, /*TaskC*/ 0u }	/*SharedRes*/
+};
 /*******************************************************************************
 	Ceiling priority for system resources
 *******************************************************************************/
-const uint8_t OsCfg_ResourceCeilPri[1]; /*Not used*/
+const uint8_t OsCfg_ResourceCeilPri[1] ={
+	/*SharedRes*/	12u
+};
 /*******************************************************************************
 	Error Code task buffer
 *******************************************************************************/
@@ -103,8 +108,8 @@ StatusType SVCCnxt_ErrCodes[3/*OsCfg_MAX_NUM_OF_TASKS*/] = {E_OK};
 /*******************************************************************************
 	SVC resource context
 *******************************************************************************/
-ResourceType SVCCnxt_ResMgrCnxt[1];/*Not used*/
+ResourceType SVCCnxt_ResMgrCnxt[3/*OsCfg_MAX_NUM_OF_TASKS*/] ={(ResourceType)0};
 /*******************************************************************************
 	Resource control block table
 *******************************************************************************/
-RCB_t RCB[1]; /*Not used*/
+RCB_t RCB[1] = {0U};
