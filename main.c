@@ -1,44 +1,68 @@
 /**
- * @file OsekIntro_Example1.c
+ * @file OsekIntro_Example2.c
  * @author Sarea Alhariri (Sarea.h95@outlook.com)
- * @brief  Simple example to show the support of periodic task using Alarm OS
- * object
+ * @brief  Periodic and Aperiodic tasks using OSEK alarms
  * @version 0.1
- * @date 2020-05-1
+ * @date 2020-08-12
  *
  * @copyright Sarea Alhariri - All rights reserved
  *
  */
-#include <stdbool.h>
+
 #include <stdint.h>
-#include "led.h"
+#include <stdbool.h>
 #include "os.h"
 
-#define USE_REAL_HW   1 /* 0 for simulation, 1 for real hardware */
 
-DeclareTask(AppTaskBlinker);
-DeclareTask(AppTaskInit);
 
-int main(void) {
+static uint8_t AppTask_Periodic_Toggle = 0U ; 
+static uint8_t AppTask_Aperiodic_Toggle = 0U ; 
+static uint8_t RelativeCounter = 0U; 
+
+DeclareTask(AppTask_Periodic);
+DeclareTask(AppTask_Aperiodic);
+
+
+void SystemInit(void)
+{
+}
+int main(void)
+{
   StartOS();
-  while (1)
-    ; /* Should not be executed */
+  while(1); /* Should not be executed */
   return 0;
 }
 
-TASK(AppTaskBlinker) {
+TASK(AppTask_Periodic)
+{
+    
+    AppTask_Periodic_Toggle ^= 0x1U; 
 
-  static uint8_t Blinker_Counter = 0u;
-  Blinker_Counter ^= 0x2;
-#if USE_REAL_HW
-	led_toggle(LED_BLUE);
-#endif
-  TerminateTask();
+    
+   if(RelativeCounter == 0U)
+   {
+      SetRelAlarm(Alrm_RelativeActivation, 10, 0);
+   }
+   else if (RelativeCounter == 1U)
+   {
+      SetRelAlarm(Alrm_RelativeActivation, 20, 0); 
+   }
+   else if (RelativeCounter == 2U )
+   {
+      SetRelAlarm(Alrm_RelativeActivation, 30, 0); 
+   }
+	 RelativeCounter++; 
+	 if (RelativeCounter > 2) RelativeCounter = 0U; 
+   
+	 TerminateTask(); 
 }
-TASK(AppTaskInit) {
 
-#if USE_REAL_HW
-   led_init_all();
-#endif
-  TerminateTask();
+TASK(AppTask_Aperiodic)
+{
+    AppTask_Aperiodic_Toggle ^= 0x1U; 
+    TerminateTask(); 
 }
+
+
+
+

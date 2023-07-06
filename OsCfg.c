@@ -1,6 +1,6 @@
 /*******************************************************************************
 	Module Name:		OsCfg.c
-	Generation Date:	2023-July-Thursday	17:12:58
+	Generation Date:	2023-July-Thursday	17:57:51
 	Tool Version: 		V.0
 	Description: 		Os configuration src file
 
@@ -25,7 +25,7 @@ const uint8_t OsCfg_MAX_NUM_OF_TASKS = 	2U;
 /*******************************************************************************
 	Num of system alarms
 *******************************************************************************/
-const uint8_t OsCfg_MAX_NUM_OF_ALARMS = 1U;
+const uint8_t OsCfg_MAX_NUM_OF_ALARMS = 2U;
 /*******************************************************************************
 	Num of system resources
 *******************************************************************************/
@@ -53,13 +53,13 @@ const uint32_t OSTICKDURATION = 10000U;
 *******************************************************************************/
 tcb_t OsCfg_TCBs[2/*num of app tasks*/+1/*for Idle mechanism */] = 
 {
-	{/*SP*/0u, /*basic SP*/0u , /*task pointer*/OsTask_AppTaskBlinker, 
+	{/*SP*/0u, /*basic SP*/0u , /*task pointer*/OsTask_AppTask_Periodic, 
 	/*task state*/SUSPENDED, /*DeadBeefLoc*/NULL, /*priority*/10, /*task model*/BASIC,
 	/*set events*/0u, /*wait events*/0u, /*res occupation*/0u, 
 	/*preemptability*/1u, /*schedule requested */0u},
 
-	{/*SP*/0u, /*basic SP*/0u , /*task pointer*/OsTask_AppTaskInit, 
-	/*task state*/READY, /*DeadBeefLoc*/NULL, /*priority*/20, /*task model*/BASIC,
+	{/*SP*/0u, /*basic SP*/0u , /*task pointer*/OsTask_AppTask_Aperiodic, 
+	/*task state*/SUSPENDED, /*DeadBeefLoc*/NULL, /*priority*/12, /*task model*/BASIC,
 	/*set events*/0u, /*wait events*/0u, /*res occupation*/0u, 
 	/*preemptability*/1u, /*schedule requested */0u},
 
@@ -72,8 +72,8 @@ tcb_t OsCfg_TCBs[2/*num of app tasks*/+1/*for Idle mechanism */] =
 *******************************************************************************/
 const uint32_t OsCfg_StackSize[2] = 
 {
-	50,		/*AppTaskBlinker*/
-	50		/*AppTaskInit*/
+	50,		/*AppTask_Periodic*/
+	50		/*AppTask_Aperiodic*/
 };
 
 /*******************************************************************************
@@ -89,12 +89,17 @@ AlarmBaseType MainCounter = { 0xFFFFFFFF, 1, 1};
 /*******************************************************************************
 	Alarm control blocks table
 *******************************************************************************/
-acb_t OsCfg_Alarms[1/*OsCfg_MAX_NUM_OF_ALARMS*/] =
+acb_t OsCfg_Alarms[2/*OsCfg_MAX_NUM_OF_ALARMS*/] =
 {
-	{/*fire time*/300, /*cyclic time*/50, /*call back*/NULL,
+	{/*fire time*/200,/*cyclic time*/50, /*call back*/NULL,
+	 /*action*/ALARM_ACTION_TASK,
+	/*base type*/&MainCounter, /*task id*/AppTask_Periodic, /*event id*/INVALID_ID, 
+	/*enable status*/true},	/*Alarm ID: Alrm_Periodic*/
+
+	{/*fire time*/0, /*cyclic time*/0, /*call back*/NULL,
 	/*action*/ALARM_ACTION_TASK,
-	/*base type*/&MainCounter, /*task id*/AppTaskBlinker, /*event id*/INVALID_ID,
-	/*enable status*/true}		/*Alarm ID: WakeBlinker*/
+	/*base type*/&MainCounter, /*task id*/AppTask_Aperiodic, /*event id*/INVALID_ID,
+	/*enable status*/false}		/*Alarm ID: Alrm_RelativeActivation*/
 };
 /*******************************************************************************
 	Resource task authorization

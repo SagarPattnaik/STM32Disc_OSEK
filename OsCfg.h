@@ -1,6 +1,6 @@
 /*******************************************************************************
 	Module Name:		OsCfg.h
-	Generation Date:	2023-July-Thursday	17:12:58
+	Generation Date:	2023-July-Thursday	17:57:51
 	Tool Version: 		V.0
 	Description: 		Os configuration header file
 
@@ -50,22 +50,22 @@ extern const uint32_t OSTICKDURATION;
 /*******************************************************************************
 	System task functions prototypes
 *******************************************************************************/
-extern void OsTask_AppTaskBlinker(void); 
-extern void OsTask_AppTaskInit(void); 
+extern void OsTask_AppTask_Periodic(void); 
+extern void OsTask_AppTask_Aperiodic(void); 
 extern void OsTask_IdleMechanism(void); 
 /*******************************************************************************
 	Task Identifiers
 *******************************************************************************/
 enum OsCfg_TaskIDs
 {
-	AppTaskBlinker,
-	AppTaskInit
+	AppTask_Periodic,
+	AppTask_Aperiodic
 };
 /*******************************************************************************
 	Symbolic names for wait events for each thread
 *******************************************************************************/
-/*AppTaskBlinkerEvents*/
-/*AppTaskInitEvents*/
+/*AppTask_PeriodicEvents*/
+/*AppTask_AperiodicEvents*/
 
 /*******************************************************************************
 	Task Control Blocks Table
@@ -75,7 +75,7 @@ extern tcb_t OsCfg_TCBs[2+1/*for Idle mechanism */];
 /*******************************************************************************
 	Alarm control blocks table
 *******************************************************************************/
-extern acb_t OsCfg_Alarms[1/*OsCfg_MAX_NUM_OF_ALARMS*/];
+extern acb_t OsCfg_Alarms[2/*OsCfg_MAX_NUM_OF_ALARMS*/];
 
 /*******************************************************************************
 	Stack size for each thread
@@ -100,7 +100,8 @@ extern AlarmBaseType MainCounter;
 	Symbolic names for alarms
 *******************************************************************************/
 enum OsCfg_AlarmIDs {
-	WakeBlinker
+	Alrm_Periodic,
+	Alrm_RelativeActivation
 };
 /*******************************************************************************
 	Alarms CB externs
