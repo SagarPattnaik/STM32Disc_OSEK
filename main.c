@@ -11,7 +11,7 @@
 
 #include "os.h"
 
-DeclareTask(TaskA);
+DeclareTask(TaskA_NonPreemptive);
 DeclareTask(TaskB);
 DeclareTask(TaskC); 
 
@@ -24,11 +24,10 @@ static uint32_t TaskC_Counter = 0u;
 int main(void)
 {
   StartOS();
-  while(1); /* Should not be executed */
   return 0;
 }
 
-TASK(TaskA)
+TASK(TaskA_NonPreemptive)
 {
     
    while(1)
@@ -36,7 +35,8 @@ TASK(TaskA)
       TaskA_Counter++;
       SimpleDelay();      
       ActivateTask(TaskB);/*TaksA is preemtable. This is a scheduling point*/
-      ActivateTask(TaskC);       
+      ActivateTask(TaskC);
+      Schedule();        
    }
 }
 TASK(TaskB)

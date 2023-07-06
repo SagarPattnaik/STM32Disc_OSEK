@@ -1,5 +1,5 @@
 CPU CORTEX-M4 {
-        OS S_OSEK {
+        OS SOSEK {
 				STATUS = EXTENDED ;
 				STARTUPHOOK = FALSE;
 				ERRORHOOK = FALSE;
@@ -12,9 +12,9 @@ CPU CORTEX-M4 {
 				USERESSCHEDULER = FALSE;
 				SYSTEMTICKMS = 10
         };
-        TASK TaskA {
+        TASK TaskA_NonPreemptive {
                 PRIORITY = 10;
-                SCHEDULE = FULL;
+                SCHEDULE = NON;
                 ACTIVATION = 1;
                 AUTOSTART = TRUE {APPMODE = AppMode1;};
                 STACKSIZE = 50;

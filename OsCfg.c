@@ -1,6 +1,6 @@
 /*******************************************************************************
 	Module Name:		OsCfg.c
-	Generation Date:	2023-July-Saturday	10:44:54
+	Generation Date:	2023-July-Thursday	10:02:02
 	Tool Version: 		V.0
 	Description: 		Os configuration src file
 
@@ -53,10 +53,10 @@ const uint32_t OSTICKDURATION = 10000U;
 *******************************************************************************/
 tcb_t OsCfg_TCBs[3/*num of app tasks*/+1/*for Idle mechanism */] = 
 {
-	{/*SP*/0u, /*basic SP*/0u , /*task pointer*/OsTask_TaskA, 
+	{/*SP*/0u, /*basic SP*/0u , /*task pointer*/OsTask_TaskA_NonPreemptive, 
 	/*task state*/READY, /*DeadBeefLoc*/NULL, /*priority*/10, /*task model*/BASIC,
 	/*set events*/0u, /*wait events*/0u, /*res occupation*/0u, 
-	/*preemptability*/1u, /*schedule requested */0u},
+	/*preemptability*/0u, /*schedule requested */0u},
 
 	{/*SP*/0u, /*basic SP*/0u , /*task pointer*/OsTask_TaskB, 
 	/*task state*/SUSPENDED, /*DeadBeefLoc*/NULL, /*priority*/11, /*task model*/BASIC,
@@ -77,7 +77,7 @@ tcb_t OsCfg_TCBs[3/*num of app tasks*/+1/*for Idle mechanism */] =
 *******************************************************************************/
 const uint32_t OsCfg_StackSize[3] = 
 {
-	50,		/*TaskA*/
+	50,		/*TaskA_NonPreemptive*/
 	50,		/*TaskB*/
 	50		/*TaskC*/
 };
