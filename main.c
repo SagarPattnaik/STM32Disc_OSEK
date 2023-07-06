@@ -1,7 +1,7 @@
 /**
- * @file OsekIntro_Example1.c
+ * @file OsekIntro_Example4.c
  * @author Sarea Alhariri (Sarea.h95@outlook.com)
- * @brief  simple example to clarify Task Activation/Termination 
+ * @brief  task chaining example 
  * @version 0.1
  * @date 2020-05-1
  *
@@ -11,15 +11,16 @@
 
 #include "os.h"
 
-DeclareTask(TaskA_NonPreemptive);
+DeclareTask(TaskA);
 DeclareTask(TaskB);
 DeclareTask(TaskC); 
+static void SimpleDelay(void); 
 
-static void SimpleDelay(void);
 
-static uint32_t TaskA_Counter = 0u;
-static uint32_t TaskB_Counter = 0u;
-static uint32_t TaskC_Counter = 0u;
+uint32_t TaskA_Counter = 0u;
+uint32_t TaskB_Counter = 0u;
+uint32_t TaskC_Counter = 0u;
+uint32_t i = 0;
 
 int main(void)
 {
@@ -27,30 +28,24 @@ int main(void)
   return 0;
 }
 
-TASK(TaskA_NonPreemptive)
+TASK(TaskA)
 {
-    
-   while(1)
-   {
-      TaskA_Counter++;
-      SimpleDelay();      
-      ActivateTask(TaskB);/*TaksA is preemtable. This is a scheduling point*/
-      ActivateTask(TaskC);
-      Schedule();        
-   }
+   TaskA_Counter++;
+   SimpleDelay();
+   ChainTask(TaskB);
 }
 TASK(TaskB)
 {
    TaskB_Counter++; 
    SimpleDelay();
-   TerminateTask();
+   ChainTask(TaskC);
 }
 
 TASK(TaskC)
 {
    TaskC_Counter++;
-   SimpleDelay();   
-   TerminateTask();
+   SimpleDelay();
+   ChainTask(TaskA);
 }
 
 static void SimpleDelay(void)

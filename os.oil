@@ -12,18 +12,18 @@ CPU CORTEX-M4 {
 				USERESSCHEDULER = FALSE;
 				SYSTEMTICKMS = 10
         };
-        TASK TaskA_NonPreemptive {
+        TASK TaskA {
                 PRIORITY = 10;
-                SCHEDULE = NON;
+                SCHEDULE = FULL;
                 ACTIVATION = 1;
-                AUTOSTART = TRUE {APPMODE = AppMode1;};
+                AUTOSTART = TRUE 
                 STACKSIZE = 50;
         };
         TASK TaskB {
                 PRIORITY = 11;
                 SCHEDULE = FULL;
                 ACTIVATION = 1;
-                AUTOSTART = FALSE {APPMODE = AppMode1;};
+                AUTOSTART = FALSE 
                 STACKSIZE = 50;
       };		 
 		TASK TaskC {

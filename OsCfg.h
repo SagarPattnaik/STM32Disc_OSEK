@@ -1,6 +1,6 @@
 /*******************************************************************************
 	Module Name:		OsCfg.h
-	Generation Date:	2023-July-Thursday	10:02:02
+	Generation Date:	2023-July-Thursday	12:28:27
 	Tool Version: 		V.0
 	Description: 		Os configuration header file
 
@@ -50,7 +50,7 @@ extern const uint32_t OSTICKDURATION;
 /*******************************************************************************
 	System task functions prototypes
 *******************************************************************************/
-extern void OsTask_TaskA_NonPreemptive(void); 
+extern void OsTask_TaskA(void); 
 extern void OsTask_TaskB(void); 
 extern void OsTask_TaskC(void); 
 extern void OsTask_IdleMechanism(void); 
@@ -59,14 +59,14 @@ extern void OsTask_IdleMechanism(void);
 *******************************************************************************/
 enum OsCfg_TaskIDs
 {
-	TaskA_NonPreemptive,
+	TaskA,
 	TaskB,
 	TaskC
 };
 /*******************************************************************************
 	Symbolic names for wait events for each thread
 *******************************************************************************/
-/*TaskA_NonPreemptiveEvents*/
+/*TaskAEvents*/
 /*TaskBEvents*/
 /*TaskCEvents*/
 
