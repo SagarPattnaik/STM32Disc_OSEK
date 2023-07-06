@@ -1,6 +1,6 @@
 /*******************************************************************************
 	Module Name:		OsCfg.c
-	Generation Date:	2023-July-Thursday	15:59:19
+	Generation Date:	2023-July-Thursday	17:12:58
 	Tool Version: 		V.0
 	Description: 		Os configuration src file
 
@@ -20,20 +20,20 @@
 /*******************************************************************************
 	Num of app tasks
 *******************************************************************************/
-const uint8_t OsCfg_MAX_NUM_OF_TASKS = 	3U;
+const uint8_t OsCfg_MAX_NUM_OF_TASKS = 	2U;
 
 /*******************************************************************************
 	Num of system alarms
 *******************************************************************************/
-const uint8_t OsCfg_MAX_NUM_OF_ALARMS = 0U;
+const uint8_t OsCfg_MAX_NUM_OF_ALARMS = 1U;
 /*******************************************************************************
 	Num of system resources
 *******************************************************************************/
-const uint8_t OsCfg_MAX_NUM_OF_RESOURCES = 1U;
+const uint8_t OsCfg_MAX_NUM_OF_RESOURCES = 0U;
 /*******************************************************************************
 	App task externs
 *******************************************************************************/
-const uint16_t OsCfg_ALL_STACK_SIZE = 150;
+const uint16_t OsCfg_ALL_STACK_SIZE = 100;
 /*******************************************************************************
 	Hook routines configurations
 *******************************************************************************/
@@ -51,20 +51,15 @@ const uint32_t OSTICKDURATION = 10000U;
 /*******************************************************************************
 	Task contol block table
 *******************************************************************************/
-tcb_t OsCfg_TCBs[3/*num of app tasks*/+1/*for Idle mechanism */] = 
+tcb_t OsCfg_TCBs[2/*num of app tasks*/+1/*for Idle mechanism */] = 
 {
-	{/*SP*/0u, /*basic SP*/0u , /*task pointer*/OsTask_TaskA, 
-	/*task state*/READY, /*DeadBeefLoc*/NULL, /*priority*/10, /*task model*/BASIC,
+	{/*SP*/0u, /*basic SP*/0u , /*task pointer*/OsTask_AppTaskBlinker, 
+	/*task state*/SUSPENDED, /*DeadBeefLoc*/NULL, /*priority*/10, /*task model*/BASIC,
 	/*set events*/0u, /*wait events*/0u, /*res occupation*/0u, 
 	/*preemptability*/1u, /*schedule requested */0u},
 
-	{/*SP*/0u, /*basic SP*/0u , /*task pointer*/OsTask_TaskB, 
-	/*task state*/SUSPENDED, /*DeadBeefLoc*/NULL, /*priority*/11, /*task model*/BASIC,
-	/*set events*/0u, /*wait events*/0u, /*res occupation*/0u, 
-	/*preemptability*/1u, /*schedule requested */0u},
-
-	{/*SP*/0u, /*basic SP*/0u , /*task pointer*/OsTask_TaskC, 
-	/*task state*/SUSPENDED, /*DeadBeefLoc*/NULL, /*priority*/20, /*task model*/BASIC,
+	{/*SP*/0u, /*basic SP*/0u , /*task pointer*/OsTask_AppTaskInit, 
+	/*task state*/READY, /*DeadBeefLoc*/NULL, /*priority*/20, /*task model*/BASIC,
 	/*set events*/0u, /*wait events*/0u, /*res occupation*/0u, 
 	/*preemptability*/1u, /*schedule requested */0u},
 
@@ -75,41 +70,49 @@ tcb_t OsCfg_TCBs[3/*num of app tasks*/+1/*for Idle mechanism */] =
 /*******************************************************************************
 	Stack Size For Each Thread
 *******************************************************************************/
-const uint32_t OsCfg_StackSize[3] = 
+const uint32_t OsCfg_StackSize[2] = 
 {
-	50,		/*TaskA*/
-	50,		/*TaskB*/
-	50		/*TaskC*/
+	50,		/*AppTaskBlinker*/
+	50		/*AppTaskInit*/
 };
 
 /*******************************************************************************
 	Stack Buffer Allocation For All Threads
 *******************************************************************************/
-uint32_t OsCfg_Stack[150+16/* 16 for Idle mechanism */] = {0u};
+uint32_t OsCfg_Stack[100+16/* 16 for Idle mechanism */] = {0u};
 
-acb_t OsCfg_Alarms[1];/*Not used*/
+/*******************************************************************************
+	Alarms base records to be referenced in alarm configs
+*******************************************************************************/
+AlarmBaseType MainCounter = { 0xFFFFFFFF, 1, 1};
+
+/*******************************************************************************
+	Alarm control blocks table
+*******************************************************************************/
+acb_t OsCfg_Alarms[1/*OsCfg_MAX_NUM_OF_ALARMS*/] =
+{
+	{/*fire time*/300, /*cyclic time*/50, /*call back*/NULL,
+	/*action*/ALARM_ACTION_TASK,
+	/*base type*/&MainCounter, /*task id*/AppTaskBlinker, /*event id*/INVALID_ID,
+	/*enable status*/true}		/*Alarm ID: WakeBlinker*/
+};
 /*******************************************************************************
 	Resource task authorization
 *******************************************************************************/
-const uint8_t OsCfg_ResourceTaskAuthorized[1/*Resources*/][3/*Tasks*/] = 
-{ 
-	{/*TaskA*/ 1u, /*TaskB*/ 1u, /*TaskC*/ 0u }	/*SharedRes*/
-};
+const uint8_t OsCfg_ResourceTaskAuthorized[1][1]; /*Not used*/
 /*******************************************************************************
 	Ceiling priority for system resources
 *******************************************************************************/
-const uint8_t OsCfg_ResourceCeilPri[1] ={
-	/*SharedRes*/	12u
-};
+const uint8_t OsCfg_ResourceCeilPri[1]; /*Not used*/
 /*******************************************************************************
 	Error Code task buffer
 *******************************************************************************/
-StatusType SVCCnxt_ErrCodes[3/*OsCfg_MAX_NUM_OF_TASKS*/] = {E_OK};
+StatusType SVCCnxt_ErrCodes[2/*OsCfg_MAX_NUM_OF_TASKS*/] = {E_OK};
 /*******************************************************************************
 	SVC resource context
 *******************************************************************************/
-ResourceType SVCCnxt_ResMgrCnxt[3/*OsCfg_MAX_NUM_OF_TASKS*/] ={(ResourceType)0};
+ResourceType SVCCnxt_ResMgrCnxt[1];/*Not used*/
 /*******************************************************************************
 	Resource control block table
 *******************************************************************************/
-RCB_t RCB[1] = {0U};
+RCB_t RCB[1]; /*Not used*/

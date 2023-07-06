@@ -1,6 +1,6 @@
 /*******************************************************************************
 	Module Name:		OsCfg.h
-	Generation Date:	2023-July-Thursday	15:59:19
+	Generation Date:	2023-July-Thursday	17:12:58
 	Tool Version: 		V.0
 	Description: 		Os configuration header file
 
@@ -50,73 +50,75 @@ extern const uint32_t OSTICKDURATION;
 /*******************************************************************************
 	System task functions prototypes
 *******************************************************************************/
-extern void OsTask_TaskA(void); 
-extern void OsTask_TaskB(void); 
-extern void OsTask_TaskC(void); 
+extern void OsTask_AppTaskBlinker(void); 
+extern void OsTask_AppTaskInit(void); 
 extern void OsTask_IdleMechanism(void); 
 /*******************************************************************************
 	Task Identifiers
 *******************************************************************************/
 enum OsCfg_TaskIDs
 {
-	TaskA,
-	TaskB,
-	TaskC
+	AppTaskBlinker,
+	AppTaskInit
 };
 /*******************************************************************************
 	Symbolic names for wait events for each thread
 *******************************************************************************/
-/*TaskAEvents*/
-/*TaskBEvents*/
-/*TaskCEvents*/
+/*AppTaskBlinkerEvents*/
+/*AppTaskInitEvents*/
 
 /*******************************************************************************
 	Task Control Blocks Table
 *******************************************************************************/
-extern tcb_t OsCfg_TCBs[3+1/*for Idle mechanism */]; 
+extern tcb_t OsCfg_TCBs[2+1/*for Idle mechanism */]; 
 
 /*******************************************************************************
 	Alarm control blocks table
 *******************************************************************************/
-extern acb_t OsCfg_Alarms[1]; /*Not used*/
+extern acb_t OsCfg_Alarms[1/*OsCfg_MAX_NUM_OF_ALARMS*/];
 
 /*******************************************************************************
 	Stack size for each thread
 *******************************************************************************/
-extern const uint32_t OsCfg_StackSize[3];
+extern const uint32_t OsCfg_StackSize[2];
 
 /*******************************************************************************
 	Stack Buffer For All Threads
 *******************************************************************************/
-extern uint32_t OsCfg_Stack[150+16/* 16 for Idle mechanism */]; 
+extern uint32_t OsCfg_Stack[100+16/* 16 for Idle mechanism */]; 
 
 /*******************************************************************************
 	Rosource task authorization
 *******************************************************************************/
-extern const uint8_t OsCfg_ResourceTaskAuthorized[1/*Resources*/][3/*Tasks*/];
+extern const uint8_t OsCfg_ResourceTaskAuthorized[1][1]; /*Not used*/
+/*******************************************************************************
+	Alarms base records to be referenced in alarm configs
+*******************************************************************************/
+extern AlarmBaseType MainCounter;
 
 /*******************************************************************************
-	Symbolic names for resources
+	Symbolic names for alarms
 *******************************************************************************/
-enum OsCfg_ResourceIDs{
-	SharedRes
+enum OsCfg_AlarmIDs {
+	WakeBlinker
 };
-
-
+/*******************************************************************************
+	Alarms CB externs
+*******************************************************************************/
 /*******************************************************************************
 	Ceiling priority for sysytem resources
 *******************************************************************************/
-extern const uint8_t OsCfg_ResourceCeilPri[1];
+extern const uint8_t OsCfg_ResourceCeilPri[1];/*Not used.*/
 /*******************************************************************************
 	Error code task buffer
 *******************************************************************************/
-extern StatusType SVCCnxt_ErrCodes[3/*OsCfg_MAX_NUM_OF_TASKS*/];
+extern StatusType SVCCnxt_ErrCodes[2/*OsCfg_MAX_NUM_OF_TASKS*/];
 /*******************************************************************************
 	SVC resource context
 *******************************************************************************/
-extern ResourceType SVCCnxt_ResMgrCnxt[3/*OsCfg_MAX_NUM_OF_TASKS*/];
+extern ResourceType SVCCnxt_ResMgrCnxt[1];/*Not used*/
 /*******************************************************************************
 	Resource control block table
 *******************************************************************************/
-extern RCB_t RCB[1];
+extern RCB_t RCB[1];/*Not used*/
 #endif
