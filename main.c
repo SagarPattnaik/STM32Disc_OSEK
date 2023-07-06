@@ -1,7 +1,7 @@
 /**
  * @file OsekIntro_Example1.c
  * @author Sarea Alhariri (Sarea.h95@outlook.com)
- * @brief  simple example to clarify the priority ceiling pattern 
+ * @brief  simple example to clarify shared resource problem 
  * @version 0.1
  * @date 2020-05-30
  *
@@ -11,10 +11,12 @@
 
 #include "os.h"
 
+typedef struct task_buffer_tag
+{
+   TaskType SourceID; 
+   uint8_t Data[8];
+}TaskBuffer_t ; 
 
-static uint32_t TaskA_Counter = 0U; 
-static uint32_t TaskB_Counter = 0U; 
-static uint32_t TaskC_Counter = 0U; 
 
 DeclareTask(TaskA);
 DeclareTask(TaskB);
@@ -22,9 +24,12 @@ DeclareTask(TaskC);
 
 static void SimpleDelay(void);
 
+static TaskBuffer_t ProtectedBuffer = {0U}; 
+static TaskBuffer_t NotProtectedBuffer = {0U}; 
+
 int main(void)
 {
- StartOS();
+  StartOS();
   while(1); /* Should not be executed */
   return 0;
 }
@@ -33,48 +38,61 @@ TASK(TaskA)
 {
    uint8_t index = 0U ; 
    while(1)
-   {  
+   {  	 
       SimpleDelay();
-		TaskA_Counter++; 
       
-      /*Task A is running at the home priority. It will be pre-empted */
-      ActivateTask(TaskB);          
+      NotProtectedBuffer.SourceID = TaskA ; 
+      for(index = 0U; index < 4U; index++)
+      {
+         NotProtectedBuffer.Data[index] = 0xAA; 
+      }
       ActivateTask(TaskC); 
+      for(index = 4U; index < 8U; index++)
+      {
+          NotProtectedBuffer.Data[index] = 0xAA; 
+      }   
+      
       
       
       GetResource(SharedRes); 
       
-      /* Task A is running at the ceiling priority. 
-       * It will not be pre-empted by SharedRes-user task 
-       */
+      ProtectedBuffer.SourceID = TaskA ; 
+      for(index = 0U; index < 4U; index++)
+      {
+         ProtectedBuffer.Data[index] = 0xAA; 
+      }
       ActivateTask(TaskB); 
-      
-      
-      /* Task A is running at the ceiling priority. 
-       * It can be pre-empted by a higher priority task 
-       * if the higher one is not configured to use the occupied resource. 
-       */
-      ActivateTask(TaskC); 
-      
-      /* Releasing a resource is a scheduling point. 
-       * TaskA will be back to the home priority. 
-       * Task B will be running because of the higher priority level 
-       */ 
+      for(index = 4U; index < 8U; index++)
+      {
+         ProtectedBuffer.Data[index] = 0xAA; 
+      }
       ReleaseResource(SharedRes); 
    }
 }
 
 TASK(TaskB)
 {
+   uint8_t index = 0U ; 
    SimpleDelay(); 
-   TaskB_Counter++; 
+   ProtectedBuffer.SourceID = TaskB; 
+   
+   for(index = 0U; index < 8U; index++)
+   {
+      ProtectedBuffer.Data[index] = 0xBB; 
+   } 
    TerminateTask();
 }
 
 TASK(TaskC)
 {
+   uint8_t index = 0U ; 
    SimpleDelay(); 
-   TaskC_Counter++; 
+   NotProtectedBuffer.SourceID = TaskC ; 
+   
+   for(index = 0U; index < 8U; index++)
+   {
+       NotProtectedBuffer.Data[index] = 0xCC; 
+   } 
    TerminateTask();
 }
 
